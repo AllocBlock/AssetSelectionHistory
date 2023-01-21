@@ -3,8 +3,6 @@ using UnityEditor;
 
 public class SelectionHistoryMiniPanel : EditorWindow
 {
-    private AssetSelectionHistory _history = new AssetSelectionHistory();
-
     [MenuItem("Window/Selection History Mini Panel")]
     static void Init()
     {
@@ -27,13 +25,13 @@ public class SelectionHistoryMiniPanel : EditorWindow
         };
 
         GUILayout.BeginHorizontal(rowLayout);
-        GUI.enabled = _history.HasPrevious();
+        GUI.enabled = AssetSelectionHistory.Instance.HasPrevious();
         if (GUILayout.Button("←", buttonLayout))
-            _history.GoPrevious();
+            AssetSelectionHistory.Instance.GoPrevious();
             
-        GUI.enabled = _history.HasNext();
+        GUI.enabled = AssetSelectionHistory.Instance.HasNext();
         if (GUILayout.Button("→", buttonLayout))
-            _history.GoNext();
+            AssetSelectionHistory.Instance.GoNext();
 
         GUILayout.EndHorizontal();
         GUI.enabled = true;
@@ -41,7 +39,6 @@ public class SelectionHistoryMiniPanel : EditorWindow
 
     void OnSelectionChange()
     {
-        _history.TriggerSelectionChange();
         Repaint();
     }
 }

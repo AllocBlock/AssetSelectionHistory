@@ -38,7 +38,6 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-
 public class AssetSelectionHistory
 {
     private static int MAX_HISTORY_NUM = 100; // 0: disable, -1: check all, otherwise up to # most recent.
@@ -48,9 +47,30 @@ public class AssetSelectionHistory
     private int _curHeadHistoryIndex = -1;
     private bool _isSelfTriggeredChange = false;
 
-    // EditorWindow有OnSelectionChange，在里面调用这里的TriggerSelectionChange
+    // singleton
+    private AssetSelectionHistory() {}
+    private static AssetSelectionHistory _instance;
+    public static AssetSelectionHistory Instance
+    {
+        get { 
+            if( _instance == null)
+            {
+                _instance = new AssetSelectionHistory();
+            }
+            return _instance;
+        }
+    }
+
+    [InitializeOnLoadMethod]
+    private static void Init()
+    {
+        Debug.Log("trigger selection hooked");
+        Selection.selectionChanged += Instance.TriggerSelectionChange; // hook
+    }
+
     public void TriggerSelectionChange()
     {
+        Debug.Log("trigger selection change");
         Object[] currentSelection = Selection.objects;
         if (currentSelection == null || currentSelection.Length == 0) return;
         if (_isSelfTriggeredChange)
